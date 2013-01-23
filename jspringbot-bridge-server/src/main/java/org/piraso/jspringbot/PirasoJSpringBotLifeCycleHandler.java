@@ -79,6 +79,7 @@ public class PirasoJSpringBotLifeCycleHandler implements LifeCycleHandler {
 
         JSpringBotEntryPoint entryPoint = new JSpringBotEntryPoint(name, suites.peek());
         testContext = new PirasoContext(entryPoint);
+        PirasoContextHolder.setContext(testContext);
 
         keywordId = new ArrayList<String>(suites);
     }
