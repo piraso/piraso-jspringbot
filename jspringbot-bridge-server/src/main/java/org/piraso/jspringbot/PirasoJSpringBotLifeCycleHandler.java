@@ -88,6 +88,15 @@ public class PirasoJSpringBotLifeCycleHandler implements LifeCycleHandler {
             return;
         }
 
+        if (testContext != null) {
+            PirasoContextHolder.setContext(testContext);
+            try {
+                ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("response"), new ResponseEntry());
+            } finally {
+                PirasoContextHolder.removeContext();
+            }
+        }
+
         PirasoContextHolder.setContext(suiteContext);
         try {
             testEntry.getElapseTime().stop();
