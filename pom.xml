@@ -70,8 +70,8 @@
   </scm>
 
   <modules>
-    <module>jspringbot-bridge-server</module>
-    <module>jspringbot-context-logger</module>
+    <module>bridge-client</module>
+    <module>context-logger</module>
   </modules>
 
   <properties>
