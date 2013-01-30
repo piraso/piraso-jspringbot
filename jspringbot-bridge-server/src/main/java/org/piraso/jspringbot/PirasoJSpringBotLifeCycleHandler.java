@@ -12,6 +12,7 @@ import org.piraso.server.PirasoContextHolder;
 import org.piraso.server.bridge.BridgeConfig;
 import org.piraso.server.dispatcher.ContextLogDispatcher;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +20,21 @@ import java.util.Stack;
 
 public class PirasoJSpringBotLifeCycleHandler implements LifeCycleHandler {
 
+    private static final PrintStream OUT = System.out;
+
     private PirasoContext suiteContext;
 
     private PirasoContext testContext;
 
     private Stack<String> suites = new Stack<String>();
 
+    private Stack<MessageEntry> keywordEntryStack = new Stack<MessageEntry>();
+
+    private MessageEntry suiteStarted;
+
     private MessageEntry testEntry;
 
-    private MessageEntry keywordEntry;
-
-    private List<String> keywordId;
+    private List<String> keywordId = new ArrayList<String>();
 
     public void startSuite(String name, Map attributes) {
         if (!BridgeConfig.INSTANCE.getLoggingEnabled()) {
@@ -47,6 +52,15 @@ public class PirasoJSpringBotLifeCycleHandler implements LifeCycleHandler {
         if (suiteContext != null) {
             PirasoContextHolder.setContext(suiteContext);
             try {
+                if (suiteStarted != null) {
+                    suiteStarted.setMessage("Suite '" + suites.peek() + "' completed.");
+                    if (suiteStarted.getElapseTime() != null) {
+                        suiteStarted.getElapseTime().stop();
+                    }
+
+                    ContextLogDispatcher.forward(Level.ALL, new GroupChainId(suites.toString()), suiteStarted);
+                }
+
                 ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("response"), new ResponseEntry());
             } finally {
                 PirasoContextHolder.removeContext();
@@ -63,23 +77,32 @@ public class PirasoJSpringBotLifeCycleHandler implements LifeCycleHandler {
         }
 
         if (suiteContext == null) {
-            JSpringBotEntryPoint entryPoint = new JSpringBotEntryPoint(suites.peek(), suites.peek());
+            JSpringBotEntryPoint entryPoint = new JSpringBotEntryPoint("/SUITE/" + suites.peek(), suites.peek());
             suiteContext = new PirasoContext(entryPoint);
 
             PirasoContextHolder.setContext(suiteContext);
             try {
                 ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("request"), new RequestEntry(entryPoint.getPath()));
+
+                suiteStarted = new MessageEntry("Suite '" + suites.peek() + "' started.");
+                ContextLogDispatcher.forward(Level.ALL, new GroupChainId(suites.toString()), suiteStarted);
+
+                suiteStarted.setElapseTime(new ElapseTimeEntry());
+                suiteStarted.getElapseTime().start();
             } finally {
                 PirasoContextHolder.removeContext();
             }
         }
 
         testEntry = new MessageEntry(name, new ElapseTimeEntry());
+        testEntry.setLevel("TEST CASE");
         testEntry.getElapseTime().start();
 
-        JSpringBotEntryPoint entryPoint = new JSpringBotEntryPoint(name, suites.peek());
+        JSpringBotEntryPoint entryPoint = new JSpringBotEntryPoint("/TEST_CASE/" + suites.peek() + "/" + name, suites.peek());
         testContext = new PirasoContext(entryPoint);
         PirasoContextHolder.setContext(testContext);
+
+        ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("request"), new RequestEntry(entryPoint.getPath()));
 
         keywordId = new ArrayList<String>(suites);
     }
@@ -112,8 +135,11 @@ public class PirasoJSpringBotLifeCycleHandler implements LifeCycleHandler {
             return;
         }
 
-        keywordEntry = new MessageEntry(name, new ElapseTimeEntry());
+        MessageEntry keywordEntry = new MessageEntry(name, new ElapseTimeEntry());
+        keywordEntry.setLevel("KEYWORD");
         keywordEntry.getElapseTime().start();
+
+        keywordEntryStack.add(keywordEntry);
     }
 
     public void endKeyword(String name, Map attributes) {
@@ -121,13 +147,9 @@ public class PirasoJSpringBotLifeCycleHandler implements LifeCycleHandler {
             return;
         }
 
-        PirasoContextHolder.setContext(testContext);
-        try {
-            keywordEntry.getElapseTime().stop();
-            ContextLogDispatcher.forward(Level.ALL, new GroupChainId(keywordId.toString()), keywordEntry);
-        } finally {
-            PirasoContextHolder.removeContext();
-        }
+        MessageEntry keywordEntry = keywordEntryStack.pop();
+        keywordEntry.getElapseTime().stop();
+        ContextLogDispatcher.forward(Level.ALL, new GroupChainId(keywordId.toString()), keywordEntry);
     }
 
     public void startJSpringBotKeyword(String name, Map attributes) {

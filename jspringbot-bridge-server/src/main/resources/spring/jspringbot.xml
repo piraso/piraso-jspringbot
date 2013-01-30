@@ -22,7 +22,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd">
-  <bean name="keywordLoggerLifeCycle" class="org.jspringbot.lifecycle.LifeCycleHandlerRegistryBean">
+  <bean name="pirasoKeywordLoggerLifeCycle" class="org.jspringbot.lifecycle.LifeCycleHandlerRegistryBean">
     <constructor-arg>
       <bean class="org.piraso.jspringbot.PirasoJSpringBotLifeCycleHandler"/>
     </constructor-arg>

@@ -34,7 +34,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.parent.groupId}</groupId>
+      <groupId>org.piraso</groupId>
       <artifactId>piraso-bridge-server</artifactId>
       <version>${piraso.version}</version>
     </dependency>
