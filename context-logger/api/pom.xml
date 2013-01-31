@@ -38,5 +38,10 @@
       <artifactId>context-logger-api</artifactId>
       <version>${piraso.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jspringbot</groupId>
+      <artifactId>jspringbot</artifactId>
+      <version>${jspringbot.version}</version>
+    </dependency>
   </dependencies>
 </project>

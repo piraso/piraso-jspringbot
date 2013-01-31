@@ -34,12 +34,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.parent.groupId}</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jspringbot-context-logger-api</artifactId>
-      <version>${project.parent.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>${project.parent.groupId}</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>context-logger-server</artifactId>
       <version>${piraso.version}</version>
     </dependency>

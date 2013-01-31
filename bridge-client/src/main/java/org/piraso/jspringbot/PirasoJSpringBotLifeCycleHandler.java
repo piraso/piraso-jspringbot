@@ -1,26 +1,38 @@
 package org.piraso.jspringbot;
 
-import org.jspringbot.lifecycle.LifeCycleHandler;
+import org.jspringbot.lifecycle.RobotListenerHandler;
 import org.piraso.api.Level;
 import org.piraso.api.entry.ElapseTimeEntry;
 import org.piraso.api.entry.MessageEntry;
 import org.piraso.api.entry.RequestEntry;
 import org.piraso.api.entry.ResponseEntry;
+import org.piraso.api.jspringbot.JSpringBotPreferenceEnum;
 import org.piraso.server.GroupChainId;
 import org.piraso.server.PirasoContext;
 import org.piraso.server.PirasoContextHolder;
 import org.piraso.server.bridge.BridgeConfig;
 import org.piraso.server.dispatcher.ContextLogDispatcher;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class PirasoJSpringBotLifeCycleHandler implements LifeCycleHandler {
+public class PirasoJSpringBotLifeCycleHandler implements RobotListenerHandler {
 
-    private static final PrintStream OUT = System.out;
+    private static final Level SUITE = Level.get(JSpringBotPreferenceEnum.SUITE.getPropertyName());
+
+    private static final Level TEST_CASE = Level.get(JSpringBotPreferenceEnum.TEST_CASE.getPropertyName());
+
+    private static final Level KEYWORD = Level.get(JSpringBotPreferenceEnum.KEYWORD.getPropertyName());
+
+    private static final Level TEST_SETUP = Level.get(JSpringBotPreferenceEnum.TEST_SETUP.getPropertyName());
+
+    private static final Level TEST_TEAR_DOWN = Level.get(JSpringBotPreferenceEnum.TEST_TEAR_DOWN.getPropertyName());
+
+    private static final Level SUITE_SETUP = Level.get(JSpringBotPreferenceEnum.SUITE_SETUP.getPropertyName());
+
+    private static final Level SUITE_TEAR_DOWN = Level.get(JSpringBotPreferenceEnum.SUITE_TEAR_DOWN.getPropertyName());
 
     private PirasoContext suiteContext;
 
@@ -156,5 +168,33 @@ public class PirasoJSpringBotLifeCycleHandler implements LifeCycleHandler {
     }
 
     public void endJSpringBotKeyword(String name, Map attributes) {
+    }
+
+    public void logMessage(Map message) {
+        
+    }
+
+    public void message(Map message) {
+        
+    }
+
+    public void outputFile(String path) {
+        
+    }
+
+    public void logFile(String path) {
+        
+    }
+
+    public void reportFile(String path) {
+        
+    }
+
+    public void debugFile(String path) {
+        
+    }
+
+    public void close() {
+        
     }
 }
