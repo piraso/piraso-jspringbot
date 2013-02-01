@@ -42,7 +42,31 @@ public class JSpringBotPreferenceProviderImpl implements PreferenceProvider {
         NCPreferenceProperty testCase = new NCPreferenceProperty(JSpringBotPreferenceEnum.TEST_CASE.getPropertyName(), Boolean.class);
         NCPreferenceProperty keyword = new NCPreferenceProperty(JSpringBotPreferenceEnum.KEYWORD.getPropertyName(), Boolean.class);
 
-        return Arrays.asList(enabled, keywordContext, suite, testCase, keyword);
+        NCPreferenceProperty testSetup = new NCPreferenceProperty(JSpringBotPreferenceEnum.TEST_SETUP.getPropertyName(), Boolean.class);
+        NCPreferenceProperty testTearDown = new NCPreferenceProperty(JSpringBotPreferenceEnum.TEST_TEAR_DOWN.getPropertyName(), Boolean.class);
+        NCPreferenceProperty suiteSetup = new NCPreferenceProperty(JSpringBotPreferenceEnum.SUITE_SETUP.getPropertyName(), Boolean.class);
+        NCPreferenceProperty suiteTearDown = new NCPreferenceProperty(JSpringBotPreferenceEnum.SUITE_TEAR_DOWN.getPropertyName(), Boolean.class);
+
+        keywordContext.addDependents(enabled);
+        suite.addDependents(enabled);
+        testCase.addDependents(enabled);
+        keyword.addDependents(enabled);
+
+        keyword.setParent(true);
+
+        testSetup.setChild(true);
+        testSetup.addDependents(keyword, enabled);
+
+        testTearDown.setChild(true);
+        testTearDown.addDependents(keyword, enabled);
+
+        suiteSetup.setChild(true);
+        suiteSetup.addDependents(keyword, enabled);
+
+        suiteTearDown.setChild(true);
+        suiteTearDown.addDependents(keyword, enabled);
+
+        return Arrays.asList(enabled, keywordContext, suite, testCase, keyword, testSetup, testTearDown, suiteSetup, suiteTearDown);
     }
 
     @Override

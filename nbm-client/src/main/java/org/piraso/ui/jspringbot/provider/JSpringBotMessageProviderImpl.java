@@ -16,9 +16,8 @@
 
 package org.piraso.ui.jspringbot.provider;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
+import org.piraso.api.entry.ElapseTimeAware;
 import org.piraso.api.entry.Entry;
 import org.piraso.api.jspringbot.JSpringBotBaseEntry;
 import org.piraso.api.jspringbot.JSpringBotEntry;
@@ -42,10 +41,26 @@ public class JSpringBotMessageProviderImpl implements MessageProvider {
 
         StringBuilder buf = new StringBuilder();
 
+//        if(JSpringBotKeywordEntry.class.isInstance(jspringbot)) {
+//            JSpringBotKeywordEntry keywordEntry = (JSpringBotKeywordEntry) jspringbot;
+//
+//            if(keywordEntry.isParent() && keywordEntry.getElapseTime() == null) {
+//                buf.append(">");
+//            }
+//        }
+
         if(JSpringBotBaseEntry.class.isInstance(jspringbot)) {
             buf.append(((JSpringBotBaseEntry) jspringbot).getName());
         } else {
             buf.append(jspringbot.getMessage());
+        }
+
+        if(ElapseTimeAware.class.isInstance(jspringbot)) {
+            ElapseTimeAware elapseTime = (ElapseTimeAware) jspringbot;
+
+            if(elapseTime.getElapseTime() != null) {
+                buf.append(" (").append(elapseTime.getElapseTime().prettyPrint()).append(")");
+            }
         }
 
         return buf.toString();
@@ -53,31 +68,6 @@ public class JSpringBotMessageProviderImpl implements MessageProvider {
 
     @Override
     public String toGroupMessage(Entry entry) {
-        if(entry.getGroup() == null) {
-            return "";
-        }
-
-        if(CollectionUtils.isNotEmpty(entry.getGroup().getGroups())) {
-            String group = entry.getGroup().getGroups().iterator().next();
-            String[] split = StringUtils.split(group, ".");
-
-            if(split != null && split.length > MAX_GROUP_SIZE) {
-                StringBuilder buf = new StringBuilder();
-
-                for(int i = split.length - MAX_GROUP_SIZE; i < split.length; i++) {
-                    if(buf.length() > 0) {
-                        buf.append(".");
-                    }
-
-                    buf.append(split[i]);
-                }
-
-                group = buf.toString();
-            }
-
-            return String.format("[%s] ", group);
-        }
-
         return "";
     }
 }
