@@ -2,7 +2,7 @@ package org.piraso.api.jspringbot;
 
 import java.util.Map;
 
-public class JSpringBotSuiteEntry extends JSpringBotBaseEntry {
+public class JSpringBotSuiteEntry extends JSpringBotBaseEntry implements JSpringBotStatusAware {
 
     public JSpringBotSuiteEntry() {
     }

@@ -20,10 +20,13 @@ import org.openide.util.lookup.ServiceProvider;
 import org.piraso.api.entry.Entry;
 import org.piraso.api.jspringbot.JSpringBotEntry;
 import org.piraso.api.jspringbot.JSpringBotKeywordEntry;
+import org.piraso.api.jspringbot.JSpringBotStatus;
+import org.piraso.api.jspringbot.JSpringBotStatusAware;
 import org.piraso.ui.api.EntryRowColumn;
 import org.piraso.ui.api.EntryRowRenderingProvider;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Provides rendering to general entry types.
@@ -40,8 +43,26 @@ public class JSpringBotEntryRowRenderingProviderImpl implements EntryRowRenderin
         if(JSpringBotKeywordEntry.class.isInstance(entry)) {
             JSpringBotKeywordEntry keywordEntry = (JSpringBotKeywordEntry) entry;
 
-            if(column == EntryRowColumn.NUMBER && keywordEntry.isParent() && keywordEntry.getElapseTime() == null) {
-                cell.setIcon(new ImageIcon(getClass().getResource("/org/piraso/ui/jspringbot/icons/bullet_toggle_plus.png")));
+            if(keywordEntry.isParent() && keywordEntry.getElapseTime() == null) {
+                if(column == EntryRowColumn.NUMBER) {
+                    cell.setIcon(new ImageIcon(getClass().getResource("/org/piraso/ui/jspringbot/icons/bullet_toggle_plus.png")));
+                } else {
+                    cell.setFont(cell.getFont().deriveFont(Font.BOLD));
+                }
+            }
+        }
+
+        if(JSpringBotStatusAware.class.isInstance(entry)) {
+            JSpringBotStatusAware statusAware = (JSpringBotStatusAware) entry;
+
+            if(statusAware.getStatus() != null) {
+                if(statusAware.getStatus() == JSpringBotStatus.PASS) {
+                    cell.setForeground(new Color(0x008000));
+                    cell.setFont(cell.getFont().deriveFont(Font.BOLD));
+                } else {
+                    cell.setForeground(Color.RED);
+                    cell.setFont(cell.getFont().deriveFont(Font.BOLD));
+                }
             }
         }
     }

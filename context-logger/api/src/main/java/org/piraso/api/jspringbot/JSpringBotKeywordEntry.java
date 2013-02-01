@@ -3,7 +3,7 @@ package org.piraso.api.jspringbot;
 import java.util.List;
 import java.util.Map;
 
-public class JSpringBotKeywordEntry extends JSpringBotBaseEntry {
+public class JSpringBotKeywordEntry extends JSpringBotBaseEntry implements JSpringBotStatusAware {
 
     private boolean parent;
 

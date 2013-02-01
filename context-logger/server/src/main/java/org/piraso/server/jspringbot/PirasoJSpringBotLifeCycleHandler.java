@@ -88,6 +88,7 @@ public class PirasoJSpringBotLifeCycleHandler implements RobotListenerHandler {
         try {
             if(isPeekKeyword()) {
                 JSpringBotKeywordEntry entry = peekKeywordEntry();
+                entry.end(attributes);
 
                 if(EVALUATOR.isTestCaseEnabled()) {
                     entry.getElapseTime().stop();

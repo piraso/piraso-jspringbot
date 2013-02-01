@@ -3,7 +3,7 @@ package org.piraso.api.jspringbot;
 import java.util.List;
 import java.util.Map;
 
-public class JSpringBotTestCaseEntry extends JSpringBotBaseEntry {
+public class JSpringBotTestCaseEntry extends JSpringBotBaseEntry implements JSpringBotStatusAware {
 
     public JSpringBotTestCaseEntry() {
     }
