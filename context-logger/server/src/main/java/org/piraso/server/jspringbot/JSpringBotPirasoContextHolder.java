@@ -1,18 +1,27 @@
 package org.piraso.server.jspringbot;
 
+import org.apache.log4j.Logger;
 import org.piraso.api.jspringbot.*;
 import org.piraso.server.CustomEntryPoint;
 import org.piraso.server.GroupChainId;
 import org.piraso.server.PirasoContextHolder;
 import org.piraso.server.PirasoEntryPoint;
 
+import java.util.Collections;
 import java.util.Stack;
 
 public class JSpringBotPirasoContextHolder {
 
+    private static final Logger LOG = Logger.getLogger(JSpringBotPirasoContextHolder.class);
+
+
     private static final Stack<JSpringBotPirasoContext> CONTEXT_STACK = new Stack<JSpringBotPirasoContext>();
 
     private static final JSpringBotPreferenceEvaluator EVALUATOR = new JSpringBotPreferenceEvaluator();
+
+    static {
+        push(new JSpringBotSuiteEntry("global", Collections.emptyMap()));
+    }
 
     private static PirasoEntryPoint createEntryPoint(String name, JSpringBotType type) {
         String path = String.format("/%s/%s", type.name(), name);
@@ -41,6 +50,7 @@ public class JSpringBotPirasoContextHolder {
     public static JSpringBotPirasoContext push(JSpringBotBaseEntry entry) {
         PirasoEntryPoint entryPoint = createEntryPoint(entry.getName(), entry.getType());
         JSpringBotPirasoContext context = new JSpringBotPirasoContext(entryPoint, entry.getName(), entry.getType());
+        context.setEntry(entry);
 
         CONTEXT_STACK.push(context);
         PirasoContextHolder.setContext(context);
@@ -53,7 +63,7 @@ public class JSpringBotPirasoContextHolder {
     }
 
     public static GroupChainId create() {
-        return null;
+        return new GroupChainId(peekSuiteEntry().getName());
     }
 
     public static boolean isPeekKeyword() {
@@ -81,7 +91,15 @@ public class JSpringBotPirasoContextHolder {
     }
 
     public static JSpringBotPirasoContext pop() {
-        return CONTEXT_STACK.pop();
+        JSpringBotPirasoContext context = CONTEXT_STACK.pop();
+
+        PirasoContextHolder.setContext(peek());
+
+        if(!EVALUATOR.isKeywordContextEnabled() && JSpringBotKeywordEntry.class.isInstance(peek().getEntry())) {
+            setContext(JSpringBotType.TEST_CASE);
+        }
+
+        return context;
     }
 
     public static JSpringBotPirasoContext peek() {
@@ -109,9 +127,7 @@ public class JSpringBotPirasoContextHolder {
     }
 
     public static void setContext() {
-        if(!CONTEXT_STACK.isEmpty()) {
-            PirasoContextHolder.setContext(CONTEXT_STACK.peek());
-        }
+        PirasoContextHolder.setContext(CONTEXT_STACK.peek());
     }
 
     public static void setContext(JSpringBotType type) {
@@ -132,8 +148,10 @@ public class JSpringBotPirasoContextHolder {
         }
 
         JSpringBotPirasoContext context = peekContext(JSpringBotType.TEST_CASE);
-        if(context != null) {
-            context.setIndent(count);
+        if(context != null && count > 0) {
+            context.setIndent((count-1) *2);
+        } else if(context != null) {
+            context.setIndent(0);
         }
     }
 

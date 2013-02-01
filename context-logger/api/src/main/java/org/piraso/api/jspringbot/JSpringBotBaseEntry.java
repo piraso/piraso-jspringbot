@@ -1,7 +1,6 @@
 package org.piraso.api.jspringbot;
 
 import org.apache.commons.lang.StringUtils;
-import org.jspringbot.PythonUtils;
 import org.piraso.api.entry.ElapseTimeAware;
 import org.piraso.api.entry.ElapseTimeEntry;
 
@@ -127,10 +126,19 @@ public abstract class JSpringBotBaseEntry extends JSpringBotEntry implements Ela
             html = StringUtils.equalsIgnoreCase("yes", String.valueOf(attributes.get("html")));
         }
         if(attributes.containsKey("tags")) {
-            tags = new ArrayList<String>((List) PythonUtils.toJava(attributes.get("tags")));
+            List items = (List) attributes.get("tags");
+            tags = new ArrayList<String>(items.size());
+
+            for(Object item : items) {
+                tags.add(String.valueOf(item));
+            }
         }
         if(attributes.containsKey("args")) {
-            arguments = new ArrayList<String>((List) PythonUtils.toJava(attributes.get("args")));
+            List items = (List) attributes.get("args");
+            arguments = new ArrayList<String>(items.size());
+            for(Object item : items) {
+                arguments.add(String.valueOf(item));
+            }
         }
         if(attributes.containsKey("type")) {
             type = JSpringBotType.valueOfByType(String.valueOf(attributes.get("type")));

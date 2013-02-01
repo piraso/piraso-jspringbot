@@ -71,6 +71,7 @@
 
   <modules>
     <module>context-logger</module>
+    <module>nbm-client</module>
   </modules>
 
   <properties>
