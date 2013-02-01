@@ -70,7 +70,6 @@
   </scm>
 
   <modules>
-    <module>bridge-client</module>
     <module>context-logger</module>
   </modules>
 

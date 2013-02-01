@@ -24,7 +24,11 @@
                            http://www.springframework.org/schema/beans/spring-beans.xsd">
   <bean name="pirasoKeywordLoggerLifeCycle" class="org.jspringbot.lifecycle.LifeCycleHandlerRegistryBean">
     <constructor-arg>
-      <bean class="org.piraso.jspringbot.PirasoJSpringBotLifeCycleHandler"/>
+      <bean class="org.piraso.server.jspringbot.PirasoPreferenceWrapperFactory" factory-method="create">
+        <constructor-arg>
+          <bean class="org.piraso.server.jspringbot.PirasoJSpringBotLifeCycleHandler"/>
+        </constructor-arg>
+      </bean>
     </constructor-arg>
   </bean>
 </beans>

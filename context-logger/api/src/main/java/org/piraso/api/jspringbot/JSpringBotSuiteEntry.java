@@ -67,12 +67,12 @@ public class JSpringBotSuiteEntry extends JSpringBotBaseEntry {
         this.status = status;
     }
 
-    public int getElapseTime() {
-        return elapseTime;
+    public Integer getScopeElapseTime() {
+        return scopeElapseTime;
     }
 
-    public void setElapseTime(int elapseTime) {
-        this.elapseTime = elapseTime;
+    public void setScopeElapseTime(Integer scopeElapseTime) {
+        this.scopeElapseTime = scopeElapseTime;
     }
 
     public String getStatistics() {

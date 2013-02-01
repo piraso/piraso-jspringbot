@@ -2,12 +2,14 @@ package org.piraso.api.jspringbot;
 
 import org.apache.commons.lang.StringUtils;
 import org.jspringbot.PythonUtils;
+import org.piraso.api.entry.ElapseTimeAware;
+import org.piraso.api.entry.ElapseTimeEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class JSpringBotBaseEntry extends JSpringBotEntry {
+public abstract class JSpringBotBaseEntry extends JSpringBotEntry implements ElapseTimeAware {
 
     protected String name;
 
@@ -21,11 +23,11 @@ public abstract class JSpringBotBaseEntry extends JSpringBotEntry {
 
     protected String endTime;
 
-    protected int totalTests;
+    protected Integer totalTests;
 
     protected JSpringBotStatus status;
 
-    protected int elapseTime;
+    protected Integer scopeElapseTime;
 
     protected String statistics;
 
@@ -45,6 +47,10 @@ public abstract class JSpringBotBaseEntry extends JSpringBotEntry {
 
     protected List<String> arguments;
 
+    protected ElapseTimeEntry elapseTime;
+
+    protected ElapseTimeEntry startTimeEntry;
+
     public JSpringBotBaseEntry() {
     }
 
@@ -56,6 +62,8 @@ public abstract class JSpringBotBaseEntry extends JSpringBotEntry {
         this.type = type;
         this.name = name;
 
+        startTimeEntry = new ElapseTimeEntry();
+        startTimeEntry.start();
         parseAttributes(attributes);
     }
 
@@ -89,7 +97,7 @@ public abstract class JSpringBotBaseEntry extends JSpringBotEntry {
             critical = StringUtils.equalsIgnoreCase("yes", String.valueOf(attributes.get("critical")));
         }
         if(attributes.containsKey("totaltests")) {
-            totalTests = Integer.parseInt(String.valueOf(attributes.get("totaltests")));
+            totalTests = Integer.valueOf(String.valueOf(attributes.get("totaltests")));
         }
         if(attributes.containsKey("starttime")) {
             startTime = String.valueOf(attributes.get("starttime"));
@@ -98,7 +106,7 @@ public abstract class JSpringBotBaseEntry extends JSpringBotEntry {
             endTime = String.valueOf(attributes.get("endtime"));
         }
         if(attributes.containsKey("elapsetime")) {
-            elapseTime = Integer.parseInt(String.valueOf(attributes.get("elapsetime")));
+            scopeElapseTime = Integer.valueOf(String.valueOf(attributes.get("elapsetime")));
         }
         if(attributes.containsKey("status")) {
             status = JSpringBotStatus.valueOf(String.valueOf(attributes.get("status")));
@@ -129,6 +137,18 @@ public abstract class JSpringBotBaseEntry extends JSpringBotEntry {
         }
     }
 
+    public void setStartTimer() {
+        setElapseTime(startTimeEntry);
+    }
+
+    public ElapseTimeEntry getElapseTime() {
+        return elapseTime;
+    }
+
+    public void setElapseTime(ElapseTimeEntry elapseTime) {
+        this.elapseTime = elapseTime;
+    }
+
     public String getName() {
         return name;
     }
@@ -136,5 +156,4 @@ public abstract class JSpringBotBaseEntry extends JSpringBotEntry {
     public void setName(String name) {
         this.name = name;
     }
-
 }

@@ -5,11 +5,21 @@ import java.util.Map;
 
 public class JSpringBotKeywordEntry extends JSpringBotBaseEntry {
 
+    private boolean parent;
+
     public JSpringBotKeywordEntry() {
     }
 
     public JSpringBotKeywordEntry(String name, Map attributes) {
         super(JSpringBotType.KEYWORD, name, attributes);
+    }
+
+    public boolean isParent() {
+        return parent;
+    }
+
+    public void setParent(boolean parent) {
+        this.parent = parent;
     }
 
     public String getDocumentation() {
@@ -44,12 +54,12 @@ public class JSpringBotKeywordEntry extends JSpringBotBaseEntry {
         this.status = status;
     }
 
-    public int getElapseTime() {
-        return elapseTime;
+    public Integer getScopeElapseTime() {
+        return scopeElapseTime;
     }
 
-    public void setElapseTime(int elapseTime) {
-        this.elapseTime = elapseTime;
+    public void setScopeElapseTime(Integer scopeElapseTime) {
+        this.scopeElapseTime = scopeElapseTime;
     }
 
     public List<String> getArguments() {
