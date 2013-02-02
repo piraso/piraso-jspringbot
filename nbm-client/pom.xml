@@ -24,7 +24,7 @@
   <parent>
     <artifactId>piraso-client-pom</artifactId>
     <groupId>org.piraso</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>piraso-client-jspringbot</artifactId>

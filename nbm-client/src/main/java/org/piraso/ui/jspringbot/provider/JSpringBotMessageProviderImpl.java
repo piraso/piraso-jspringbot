@@ -28,8 +28,6 @@ import org.piraso.ui.api.MessageProvider;
  */
 @ServiceProvider(service=MessageProvider.class)
 public class JSpringBotMessageProviderImpl implements MessageProvider {
-    public static final int MAX_GROUP_SIZE = 2;
-
     @Override
     public boolean isSupported(Entry entry) {
         return JSpringBotEntry.class.isInstance(entry);
@@ -40,14 +38,6 @@ public class JSpringBotMessageProviderImpl implements MessageProvider {
         JSpringBotEntry jspringbot = (JSpringBotEntry) entry;
 
         StringBuilder buf = new StringBuilder();
-
-//        if(JSpringBotKeywordEntry.class.isInstance(jspringbot)) {
-//            JSpringBotKeywordEntry keywordEntry = (JSpringBotKeywordEntry) jspringbot;
-//
-//            if(keywordEntry.isParent() && keywordEntry.getElapseTime() == null) {
-//                buf.append(">");
-//            }
-//        }
 
         if(JSpringBotBaseEntry.class.isInstance(jspringbot)) {
             buf.append(((JSpringBotBaseEntry) jspringbot).getName());
