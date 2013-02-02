@@ -47,6 +47,8 @@ public class JSpringBotEntryRowRenderingProviderImpl implements EntryRowRenderin
                 if(column == EntryRowColumn.NUMBER) {
                     cell.setIcon(new ImageIcon(getClass().getResource("/org/piraso/ui/jspringbot/icons/bullet_toggle_plus.png")));
                 } else {
+                    cell.setBackground(Color.BLACK);
+                    cell.setForeground(Color.WHITE);
                     cell.setFont(cell.getFont().deriveFont(Font.BOLD));
                 }
             }
@@ -57,12 +59,14 @@ public class JSpringBotEntryRowRenderingProviderImpl implements EntryRowRenderin
 
             if(statusAware.getStatus() != null) {
                 if(statusAware.getStatus() == JSpringBotStatus.PASS) {
-                    cell.setForeground(new Color(0x008000));
-                    cell.setFont(cell.getFont().deriveFont(Font.BOLD));
+                    cell.setBackground(new Color(0x008000));
+                    cell.setForeground(new Color(0xBAEEBA));
                 } else {
-                    cell.setForeground(Color.RED);
-                    cell.setFont(cell.getFont().deriveFont(Font.BOLD));
+                    cell.setBackground(Color.RED);
+                    cell.setForeground(new Color(0xFFC8BD));
                 }
+
+                cell.setFont(cell.getFont().deriveFont(Font.BOLD));
             }
         }
     }

@@ -9,8 +9,12 @@ public class JSpringBotResponseEntry extends ResponseEntry {
     public JSpringBotResponseEntry() {
     }
 
-    public JSpringBotResponseEntry(JSpringBotStatus testStatus) {
-        this.testStatus = testStatus;
+    public JSpringBotResponseEntry(JSpringBotStatusAware entry) {
+        this.testStatus = entry.getStatus();
+
+        if(entry.getElapseTime() != null) {
+            setElapseTime(entry.getElapseTime());
+        }
     }
 
     public JSpringBotStatus getTestStatus() {
@@ -23,6 +27,14 @@ public class JSpringBotResponseEntry extends ResponseEntry {
 
     @Override
     public String toString() {
-        return String.format("%sED", testStatus.name());
+        if(testStatus != null) {
+            if(getElapseTime() == null) {
+                return String.format("%sED", testStatus.name());
+            } else {
+                return String.format("%sED (%s)", testStatus.name(), getElapseTime().prettyPrint());
+            }
+        } else {
+            return "UNKNOWN";
+        }
     }
 }

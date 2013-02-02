@@ -1,5 +1,7 @@
 package org.piraso.server.jspringbot;
 
+import org.piraso.api.Level;
+import org.piraso.api.entry.Entry;
 import org.piraso.api.jspringbot.*;
 import org.piraso.server.CustomEntryPoint;
 import org.piraso.server.GroupChainId;
@@ -16,7 +18,7 @@ public class JSpringBotPirasoContextHolder {
     private static final JSpringBotPreferenceEvaluator EVALUATOR = new JSpringBotPreferenceEvaluator();
 
     static {
-        push(new JSpringBotSuiteEntry("global", Collections.emptyMap()));
+        pushDummy(new JSpringBotSuiteEntry("global", Collections.emptyMap()));
     }
 
     private static PirasoEntryPoint createEntryPoint(String name, JSpringBotType type) {
@@ -40,6 +42,21 @@ public class JSpringBotPirasoContextHolder {
         }
 
         return new CustomEntryPoint(path, remoteAddr);
+    }
+
+    private static void pushDummy(JSpringBotBaseEntry entry) {
+        PirasoEntryPoint entryPoint = createEntryPoint(entry.getName(), entry.getType());
+        JSpringBotPirasoContext context = new JSpringBotPirasoContext(entryPoint, entry.getName(), entry.getType()) {
+            @Override
+            public void log(Level level, GroupChainId id, Entry entry) {
+                // ignore
+            }
+        };
+
+        context.setEntry(entry);
+
+        CONTEXT_STACK.push(context);
+        PirasoContextHolder.setContext(context);
     }
 
     public static JSpringBotPirasoContext push(JSpringBotBaseEntry entry) {

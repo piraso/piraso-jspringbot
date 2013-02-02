@@ -21,6 +21,7 @@ import org.piraso.api.entry.ElapseTimeAware;
 import org.piraso.api.entry.Entry;
 import org.piraso.api.jspringbot.JSpringBotBaseEntry;
 import org.piraso.api.jspringbot.JSpringBotEntry;
+import org.piraso.api.jspringbot.JSpringBotKeywordEntry;
 import org.piraso.ui.api.MessageProvider;
 
 /**
@@ -38,6 +39,14 @@ public class JSpringBotMessageProviderImpl implements MessageProvider {
         JSpringBotEntry jspringbot = (JSpringBotEntry) entry;
 
         StringBuilder buf = new StringBuilder();
+
+        if(JSpringBotKeywordEntry.class.isInstance(entry)) {
+            JSpringBotKeywordEntry keywordEntry = (JSpringBotKeywordEntry) entry;
+
+            if(keywordEntry.isParent() && keywordEntry.getElapseTime() != null) {
+                buf.append("\u25B2 ");
+            }
+        }
 
         if(JSpringBotBaseEntry.class.isInstance(jspringbot)) {
             buf.append(((JSpringBotBaseEntry) jspringbot).getName());

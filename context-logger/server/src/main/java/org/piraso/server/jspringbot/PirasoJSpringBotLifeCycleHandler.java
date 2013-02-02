@@ -33,7 +33,7 @@ public class PirasoJSpringBotLifeCycleHandler implements RobotListenerHandler {
             peekSuiteEntry().end(attributes);
             peekSuiteEntry().getElapseTime().stop();
             ContextLogDispatcher.forward(SUITE, create(), peekEntry());
-            ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("END"), new JSpringBotResponseEntry(peekSuiteEntry().getStatus()));
+            ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("END"), new JSpringBotResponseEntry(peekSuiteEntry()));
         } finally {
             pop();
         }
@@ -59,7 +59,7 @@ public class PirasoJSpringBotLifeCycleHandler implements RobotListenerHandler {
                 removeContext();
             }
 
-            ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("END"), new JSpringBotResponseEntry(peekTestCaseEntry().getStatus()));
+            ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("END"), new JSpringBotResponseEntry(peekTestCaseEntry()));
         } finally {
             pop();
         }
@@ -73,33 +73,50 @@ public class PirasoJSpringBotLifeCycleHandler implements RobotListenerHandler {
                 entry.setParent(true);
                 entry.setElapseTime(null);
 
-                Level keywordLevel = Level.get(entry.getType().getPreference().getPropertyName());
-                ContextLogDispatcher.forward(keywordLevel, create(), entry);
-                entry.setStartTimer();
+                setContext(JSpringBotType.TEST_CASE, JSpringBotType.SUITE);
+
+                try {
+                    Level keywordLevel = Level.get(entry.getType().getPreference().getPropertyName());
+                    ContextLogDispatcher.forward(keywordLevel, create(), entry);
+                    entry.setStartTimer();
+                } finally {
+                    removeContext();
+                }
             }
         }
 
         push(new JSpringBotKeywordEntry(name, attributes));
         peekEntry().setStartTimer();
         setContextIndent();
+
+        if(EVALUATOR.isKeywordContextEnabled()) {
+            ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("START"), new JSpringBotRequestEntry(peekEntryPoint().getPath()));
+        }
     }
 
     public void endKeyword(String name, Map attributes) {
         try {
-            if(isPeekKeyword()) {
-                JSpringBotKeywordEntry entry = peekKeywordEntry();
-                entry.end(attributes);
+            JSpringBotKeywordEntry entry = peekKeywordEntry();
+            entry.end(attributes);
 
-                if(EVALUATOR.isTestCaseEnabled()) {
-                    entry.getElapseTime().stop();
+            if(EVALUATOR.isTestCaseEnabled()) {
+                entry.getElapseTime().stop();
 
-                    if(entry.isParent()) {
-                        setContextIndent(1);
-                    }
+                if(entry.isParent()) {
+                    setContextIndent(1);
+                }
 
+                setContext(JSpringBotType.TEST_CASE, JSpringBotType.SUITE);
+                try {
                     Level keywordLevel = Level.get(entry.getType().getPreference().getPropertyName());
                     ContextLogDispatcher.forward(keywordLevel, create(), entry);
+                } finally {
+                    removeContext();
                 }
+            }
+
+            if(EVALUATOR.isKeywordContextEnabled()) {
+                ContextLogDispatcher.forward(Level.SCOPED, new GroupChainId("END"), new JSpringBotResponseEntry(peekKeywordEntry()));
             }
         } finally {
             pop();

@@ -1,5 +1,7 @@
 package org.piraso.api.jspringbot;
 
-public interface JSpringBotStatusAware {
+import org.piraso.api.entry.ElapseTimeAware;
+
+public interface JSpringBotStatusAware extends ElapseTimeAware {
     JSpringBotStatus getStatus();
 }
